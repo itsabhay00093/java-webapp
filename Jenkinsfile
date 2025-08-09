@@ -5,7 +5,7 @@ pipeline {
         // Adjust SonarQube installation name to match Jenkins global config
         SONARQUBE_ENV = 'SonarQubeServer'  
         // Adjust Maven settings if needed
-        MAVEN_HOME = tool name: 'Maven3', type: 'maven'
+        MAVEN_HOME = "/usr/bin"
     }
 
     stages {
@@ -19,14 +19,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building project with Maven..."
-                sh "${MAVEN_HOME}/bin/mvn clean compile"
+                sh "${MAVEN_HOME}/mvn clean compile"
             }
         }
 
         stage('Test & Code Coverage') {
             steps {
                 echo "Running tests and generating JaCoCo report..."
-                sh "${MAVEN_HOME}/bin/mvn test jacoco:report"
+                sh "${MAVEN_HOME}/mvn test jacoco:report"
             }
             post {
                 always {
@@ -43,7 +43,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh "${MAVEN_HOME}/bin/mvn sonar:sonar -Dsonar.projectKey=demo-project"
+                    sh "${MAVEN_HOME}/mvn sonar:sonar -Dsonar.projectKey=demo-project"
                 }
             }
         }
@@ -64,7 +64,7 @@ pipeline {
         stage('Package WAR') {
             steps {
                 echo "Packaging WAR file..."
-                sh "${MAVEN_HOME}/bin/mvn package"
+                sh "${MAVEN_HOME}/mvn package"
             }
         }
 
