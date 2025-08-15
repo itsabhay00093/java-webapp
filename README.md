@@ -15,5 +15,5 @@ mvn clean verify
 # - test reports in target/surefire-reports
 # - JaCoCo report in target/site/jacoco
 
-## check the application consle
+## check the application console
 http://localhost:8080/demo-webapp
