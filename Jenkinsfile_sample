@@ -6,14 +6,14 @@ pipeline {
     }
     environment {
         MAVEN_HOME = '/usr/bin/'
-        REGION = "us-east-1"
+        REGION = "us-east-2"
     }
     stages {
         stage('Hello') {
-            steps {
-                
+            when { "${REGION}" == "us-east-1"}
+            steps {  
                 echo "Hello World ${REGION}"
-                echo " ${params.ENV}"
+                echo "${params.ENV}"
             }
         }
         stage('build') {
