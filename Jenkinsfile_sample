@@ -2,7 +2,7 @@ pipeline {
     agent { label 'preprod-slave' }
     parameters {
         choice(name: 'ENV', choices: ['DEV','QA','PROD'],description: 'please select the env')
-        password(name: 'PASSWORD', deafultValue: '',description: 'please provide the password')
+        password(name: 'PASSWORD', defaultValue: '',description: 'please provide the password')
     }
     stages {
         stage('Hello') {
