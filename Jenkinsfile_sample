@@ -10,7 +10,9 @@ pipeline {
     }
     stages {
         stage('Hello') {
-            when { "${REGION}" == "us-east-1"}
+            when {
+    environment name: "REGION, value: "us-east-1"
+}
             steps {  
                 echo "Hello World ${REGION}"
                 echo "${params.ENV}"
