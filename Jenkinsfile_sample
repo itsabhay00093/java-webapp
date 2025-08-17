@@ -1,0 +1,19 @@
+pipeline {
+    agent { label 'preprod-slave' }
+    parameters {
+        choice(name: 'ENV', choices: ['DEV','QA','PROD'],description: 'please select the env')
+        password(name: 'PASSWORD', deafultValue: '',description: 'please provide the password')
+    }
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('build') {
+            steps {
+                echo 'stage -2'
+            }
+        }
+    }
+}
