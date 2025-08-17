@@ -4,10 +4,16 @@ pipeline {
         choice(name: 'ENV', choices: ['DEV','QA','PROD'],description: 'please select the env')
         password(name: 'PASSWORD', defaultValue: '',description: 'please provide the password')
     }
+    environment {
+        MAVEN_HOME = '/usr/bin/'
+        REGION = "us-east-1"
+    }
     stages {
         stage('Hello') {
             steps {
-                echo 'Hello World'
+                
+                echo "Hello World ${REGION}"
+                echo " ${params.ENV}"
             }
         }
         stage('build') {
