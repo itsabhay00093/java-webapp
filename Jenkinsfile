@@ -9,10 +9,11 @@ pipeline {
         SONARQUBE_ENV = 'SonarQubeServer'
         SERVER_ID="innoimpex"
         REPO="maven-libs-release-local"
-        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        REMOTE_PATH="com/example/demo-webapp/$VERSION/demo-webapp-$VERSION.war"
-        LOCAL_PATH="/tmp/app-$VERSION.war"
+        REMOTE_PATH="com/example/demo-webapp/1.0.1/demo-webapp-1.0.1.war"
+        LOCAL_PATH="/tmp/app-1.0.0.war"
     }
+    
+
     stages {
         stage('Checkout') {
             steps {
