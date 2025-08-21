@@ -99,6 +99,19 @@ pipeline {
             }
         }
         }
+        stage('release Approval') {
+            when { expression { env.BRANCH_NAME == 'main' } }
+            steps {
+                script {
+                    timeout(time: 30, unit: 'MINUTES') {
+                        input message: 'Approve deployment to Production?',
+                            ok: 'Approve',
+                            submitter: 'releasemaster'
+                    }
+                }
+            }
+        }
+
         stage('Deploy to Tomcat') {
             steps {
                 echo "Deploying WAR to Tomcat..."
@@ -106,7 +119,8 @@ pipeline {
                     ~/tomcat/bin/shutdown.sh
                     sleep 5
                     cp ${OUTPUT_FILE} ~/tomcat/webapps/
-                    ~/tomcat/bin/startup.sh 
+                    ~/tomcat/bin/startup.sh
+                    sleep 5 
                 """
             }
         }
