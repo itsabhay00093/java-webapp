@@ -112,11 +112,11 @@
     </plugins>
   </build>
 <distributionManagement>
-    <repository>
+   <!-- <repository>
         <id>central</id>
         <name>innoimpex-maven-libs-release-local-releases</name>
         <url>https://innoimpex.jfrog.io/artifactory/maven-libs-snapshot</url>
-    </repository>
+    </repository> -->
     <snapshotRepository>
         <id>snapshots</id>
         <name>innoimpex-maven-libs-snapshots</name>
