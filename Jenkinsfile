@@ -12,6 +12,8 @@ pipeline {
         REPO="maven-libs-release-local"
         REMOTE_PATH="com/example/demo-webapp/1.0.1/demo-webapp-1.0.1.war"
         LOCAL_PATH="/tmp/app-1.0.0.war"
+        ARTIFACT_URL = "https://innoimpex.jfrog.io/artifactory/maven-libs-release-local/com/example/demo-webapp/1.0.1/demo-webapp-1.0.1.war"
+        OUTPUT_FILE  = "demo-webapp-1.0.1.war"
     }
     
 
@@ -82,10 +84,13 @@ pipeline {
         }
         stage('Pull artifacts') {
             steps {
+                script {
                 echo "Pulling WAR file..."
-                sh '''
-                  jf rt dl "${REPO}/${REMOTE_PATH}" "${LOCAL_PATH}" --server-id="${SERVER_ID}"
-                '''
+                withCredentials([usernamePassword(credentialsId: 'jfrogid', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASS')]) {
+                    sh '''
+                        curl -u $ART_USER:$ART_PASS -o $OUTPUT_FILE "$ARTIFACT_URL"
+                    '''
+            }
             }
         }
 
