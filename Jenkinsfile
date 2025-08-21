@@ -3,6 +3,7 @@ pipeline {
     tools {
         maven 'Maven3'
         jdk 'JDK17'
+        jfrog 'jfrog-cli'
     }
     environment {
         // Adjust SonarQube installation name to match Jenkins global config
