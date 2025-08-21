@@ -26,6 +26,7 @@ pipeline {
         }
 
         stage('Build') {
+            when { expression { env.BRANCH_NAME != 'main' } }
             steps {
                 echo "Building project with Maven..."
                 sh "mvn clean compile"
@@ -33,6 +34,7 @@ pipeline {
         }
 
         stage('Test & Code Coverage') {
+            when { expression { env.BRANCH_NAME != 'main' } }
             steps {
                 echo "Running tests and generating JaCoCo report..."
                 sh "mvn test jacoco:report"
@@ -50,6 +52,7 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
+            when { expression { env.BRANCH_NAME != 'main' } }
                 steps {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                         withSonarQubeEnv("${SONARQUBE_ENV}") {
@@ -64,6 +67,7 @@ pipeline {
             }
 
         stage('Quality Gate') {
+            when { expression { env.BRANCH_NAME != 'main' } }
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
                     script {
@@ -77,6 +81,7 @@ pipeline {
         }
 
         stage('Publish artifacts') {
+            when { expression { env.BRANCH_NAME != 'main' } }
             steps {
                 echo "Packaging WAR file..."
                 sh "mvn deploy"
