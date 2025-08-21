@@ -98,9 +98,9 @@ pipeline {
             steps {
                 echo "Deploying WAR to Tomcat..."
                 sh """
-                export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
                     ~/tomcat/bin/shutdown.sh
-                    cp target/*.war ~/tomcat/webapps/
+                    sleep 5
+                    cp ${OUTPUT_FILE} ~/tomcat/webapps/
                     ~/tomcat/bin/startup.sh 
                 """
             }
