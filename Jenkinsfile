@@ -24,7 +24,32 @@ pipeline {
                 checkout scm
             }
         }
-
+        stage('Check and Update Version') {
+            when { expression { env.BRANCH_NAME != 'main' } }
+            steps {
+                script {
+                    def branchName = env.BRANCH_NAME ?: 'unknown'                    
+                    // Read version from pom.xml
+                    def version = sh(
+                        script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout",
+                        returnStdout: true
+                    ).trim()
+                    echo "Current POM version: ${version}"
+                    echo "Current Branch: ${branchName}"
+                    // If branch is release, remove -SNAPSHOT
+                    if (branchName == 'release' && version.endsWith('-SNAPSHOT')) {
+                        def newVersion = version.replace('-SNAPSHOT', '')
+                        echo "Updating version to: ${newVersion}"
+                        sh """
+                            mvn versions:set -DnewVersion=${newVersion} -DprocessAllModules
+                            mvn versions:commit
+                        """
+                    } else {
+                        echo "No version update required."
+                    }
+                }
+            }
+        }
         stage('Build') {
             when { expression { env.BRANCH_NAME != 'main' } }
             steps {
