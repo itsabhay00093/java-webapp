@@ -1,15 +1,18 @@
 pipeline {
     agent any
-
-    environment {
-        // Adjust SonarQube installation name to match Jenkins global config
-        SONARQUBE_ENV = 'SonarQubeServer'
-    }
     tools {
         maven 'Maven3'
         jdk 'JDK17'
     }
-
+    environment {
+        // Adjust SonarQube installation name to match Jenkins global config
+        SONARQUBE_ENV = 'SonarQubeServer'
+        SERVER_ID="innoimpex"
+        REPO="maven-libs-release-local"
+        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        REMOTE_PATH="com/example/demo-webapp/$VERSION/demo-webapp-$VERSION.war"
+        LOCAL_PATH="/tmp/app-$VERSION.war"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -69,10 +72,16 @@ pipeline {
             }
         }
 
-        stage('Package WAR') {
+        stage('Publish artifacts') {
             steps {
                 echo "Packaging WAR file..."
-                sh "mvn package"
+                sh "mvn deploy"
+            }
+        }
+        stage('Pull artifacts') {
+            steps {
+                echo "Packaging WAR file..."
+                sh "jf rt dl "${REPO}/${REMOTE_PATH}" "${LOCAL_PATH}" --server-id=${SERVER_ID}"
             }
         }
 
