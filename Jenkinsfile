@@ -1,11 +1,10 @@
 pipeline {
     agent any
-
     environment {
         // Adjust SonarQube installation name to match Jenkins global config
         SONARQUBE_ENV = 'SonarQubeServer'  
         // Adjust Maven settings if needed
-        MAVEN_HOME = "/usr/bin"
+        MAVEN_HOME = "/opt/homebrew/bin"
     }
 
     stages {
@@ -15,7 +14,6 @@ pipeline {
                 checkout scm
             }
         }
-
         stage('Build') {
             steps {
                 echo "Building project with Maven..."
