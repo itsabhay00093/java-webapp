@@ -123,6 +123,5 @@
         <url>https://innoimpex.jfrog.io/artifactory/maven-libs-snapshot</url>
     </snapshotRepository>
 </distributionManagement>
-
 </project>
 
