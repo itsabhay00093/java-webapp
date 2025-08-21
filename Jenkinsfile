@@ -82,10 +82,10 @@ pipeline {
         }
         stage('Pull artifacts') {
             steps {
-                echo "Packaging WAR file..."
-                sh """
-                jf rt dl "${REPO}/${REMOTE_PATH}" "${LOCAL_PATH}" --server-id=${SERVER_ID}
-                """
+                echo "Pulling WAR file..."
+                sh '''
+                  jf rt dl "${REPO}/${REMOTE_PATH}" "${LOCAL_PATH}" --server-id="${SERVER_ID}"
+                '''
             }
         }
 
