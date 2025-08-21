@@ -1,10 +1,13 @@
 pipeline {
     agent any
+
     environment {
         // Adjust SonarQube installation name to match Jenkins global config
-        SONARQUBE_ENV = 'SonarQubeServer'  
-        // Adjust Maven settings if needed
-        MAVEN_HOME = "/opt/homebrew/bin"
+        SONARQUBE_ENV = 'SonarQubeServer'
+    }
+    tools {
+        maven 'Maven3'
+        jdk 'JDK17'
     }
 
     stages {
@@ -14,17 +17,18 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Build') {
             steps {
                 echo "Building project with Maven..."
-                sh "${MAVEN_HOME}/mvn clean compile"
+                sh "mvn clean compile"
             }
         }
 
         stage('Test & Code Coverage') {
             steps {
                 echo "Running tests and generating JaCoCo report..."
-                sh "${MAVEN_HOME}/mvn test jacoco:report"
+                sh "mvn test jacoco:report"
             }
             post {
                 always {
@@ -39,12 +43,18 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh "${MAVEN_HOME}/mvn sonar:sonar -Dsonar.projectKey=demo-project"
+                steps {
+                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                        withSonarQubeEnv("${SONARQUBE_ENV}") {
+                            sh """
+                                mvn sonar:sonar \
+                                    -Dsonar.projectKey=demo-project \
+                                    -Dsonar.login=$SONAR_TOKEN
+                            """
+                        }
+                    }
                 }
             }
-        }
 
         stage('Quality Gate') {
             steps {
@@ -62,7 +72,7 @@ pipeline {
         stage('Package WAR') {
             steps {
                 echo "Packaging WAR file..."
-                sh "${MAVEN_HOME}/mvn package"
+                sh "mvn package"
             }
         }
 
@@ -70,9 +80,10 @@ pipeline {
             steps {
                 echo "Deploying WAR to Tomcat..."
                 sh """
-                    sudo systemctl stop tomcat
-                    sudo cp target/*.war /opt/tomcat/webapps/
-                    sudo systemctl start tomcat
+                export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+                    ~/tomcat/bin/shutdown.sh
+                    cp target/*.war ~/tomcat/webapps/
+                    ~/tomcat/bin/startup.sh 
                 """
             }
         }
@@ -87,4 +98,3 @@ pipeline {
         }
     }
 }
-
