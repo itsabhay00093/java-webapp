@@ -8,6 +8,8 @@ pipeline {
     environment {
         SONARQUBE_ENV = 'SonarQubeServer'
         JFROG_SERVER_ID = "innoimpex"
+        OUTPUT_FILE = "demo-webapp-1.0.0.war"
+        ARTIFACT_URL = "https://innoimpex.jfrog.io/artifactory/maven-libs-release-local/com/example/demo-webapp/1.0.0/demo-webapp-1.0.0.war"
     }
     stages{
         stage('checkout') {
@@ -66,6 +68,38 @@ pipeline {
         stage('Upload to Artifactory') {
             steps {
                 sh "mvn clean deploy"
+            }
+        }
+        stage('Pull Artifacts') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'jfrogid', usernameVariable: 'ARTIFACT_USR', passwordVariable: 'ARTIFACT_PASS')]){
+                        sh '''
+                            curl -u $ARTIFACT_USR:$ARTIFACT_PASS -o $OUTPUT_FILE $ARTIFACT_URL
+                        '''
+                    }
+                }
+            }
+        }
+        stage('approval') {
+            steps {
+                script {
+                    timeout(time: 30, unit: 'MINUTES'){
+                        input message: 'Approve the deployment',
+                        ok: 'Approve',
+                        submitter: 'releasemanager'
+                    }
+                }
+            }
+        }
+        stage('Deploy to Tomcat') {
+            steps {
+                sh """
+                /Users/abhay/tomcat/bin/shutdown.sh
+                sleep 5
+                cp ${OUTPUT_FILE} ~/tomcat/webapps/
+                /Users/abhay/tomcat/bin/startup.sh
+                """
             }
         }
     }
