@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+    tools {
+        maven 'Maven3'
+        jdk 'JDK17'
+        jfrog 'jfrog-cli'
+    }
+    environment {
+        SONARQUBE_ENV = 'SonarQubeServer'
+        JFROG_SERVER_ID = "innoimpex"
+    }
+    stages{
+        stage('checkout') {
+            steps {
+                echo "pulling the code from GitHub.."
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                echo "Compiling the code.."
+                sh "mvn clean compile"
+            }
+        }
+        stage('Test & code coverage') {
+            steps {
+                echo "Running test and code coverage.."
+                sh "mvn test jacoco:report"
+            }
+            post {
+                always {
+                    echo "generating Jacoco report.."
+                    jacoco execPatter: '**/target/jacoco.exec',
+                    classPattern: '**/target/classes',
+                    sourcePattern: '**/src/main/java',
+                    inclusionPatter: '**/*.class',
+                    exclusionPattern: ''
+                }
+            }           
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                echo "SonarQube Analysis.."
+                withCredentials([string(credencialsId: 'sonar-token', variable: 'SONAR_TOKEN')]){
+                    withSonarQubeEnv("${SONARQUBE_ENV}") {
+                        sh """
+                            mvn sonar:sonar \
+                            -Dsonar.projectKey=demo-project \
+                            -Dsonar.login=$SONAR_TOKEN
+                        """
+                    }
+                }
+            }
+        }
+        stage('Qiality Gate check') {
+            steps {
+                echo "Running Quality check.."
+                script {
+                    def qualityCheck = waitForQulityGate()
+                    if (qualityCheck.status != 'OK') {
+                        error "Quality check failed ..."
+                    }
+                }
+            }
+        }
+    }
+
+}
