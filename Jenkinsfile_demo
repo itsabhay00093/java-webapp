@@ -30,10 +30,10 @@ pipeline {
             post {
                 always {
                     echo "generating Jacoco report.."
-                    jacoco execPatter: '**/target/jacoco.exec',
+                    jacoco execPattern: '**/target/jacoco.exec',
                     classPattern: '**/target/classes',
                     sourcePattern: '**/src/main/java',
-                    inclusionPatter: '**/*.class',
+                    inclusionPattern: '**/*.class',
                     exclusionPattern: ''
                 }
             }           
