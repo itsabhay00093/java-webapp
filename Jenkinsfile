@@ -10,10 +10,10 @@ pipeline {
         SONARQUBE_ENV = 'SonarQubeServer'
         SERVER_ID="innoimpex"
         REPO="maven-libs-release-local"
-        REMOTE_PATH="com/example/demo-webapp/1.0.1/demo-webapp-1.0.1.war"
-        LOCAL_PATH="/tmp/app-1.0.0.war"
-        ARTIFACT_URL = "https://innoimpex.jfrog.io/artifactory/maven-libs-release-local/com/example/demo-webapp/1.0.1/demo-webapp-1.0.1.war"
-        OUTPUT_FILE  = "demo-webapp-1.0.1.war"
+        REMOTE_PATH="com/example/demo-webapp/1.0.1/demo-webapp-1.0.0.war"
+        LOCAL_PATH="/tmp/demo-webapp-1.0.0.war"
+        ARTIFACT_URL = "https://innoimpex.jfrog.io/artifactory/maven-libs-release-local/com/example/demo-webapp/1.0.0/demo-webapp-1.0.0.war"
+        OUTPUT_FILE  = "demo-webapp-1.0.0.war"
     }
     
 
