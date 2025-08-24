@@ -52,11 +52,11 @@ pipeline {
                 }
             }
         }
-        stage('Qiality Gate check') {
+        stage('Quality Gate check') {
             steps {
                 echo "Running Quality check.."
                 script {
-                    def qualityCheck = waitForQulityGate()
+                    def qualityCheck = waitForQualityGate()
                     if (qualityCheck.status != 'OK') {
                         error "Quality check failed ..."
                     }
