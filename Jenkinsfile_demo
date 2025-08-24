@@ -41,13 +41,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo "SonarQube Analysis.."
-                withCredentials([string(credencialsId: 'sonar-token', variable: 'SONAR_TOKEN')]){
-                    withSonarQubeEnv("${SONARQUBE_ENV}") {
-                        sh """
-                            mvn sonar:sonar \
-                            -Dsonar.projectKey=demo-project \
-                            -Dsonar.login=$SONAR_TOKEN
-                        """
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                        withSonarQubeEnv("${SONARQUBE_ENV}") {
+                            sh """
+                                mvn sonar:sonar \
+                                    -Dsonar.projectKey=demo-project \
+                                    -Dsonar.login=$SONAR_TOKEN
+                            """
                     }
                 }
             }
