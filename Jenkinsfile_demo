@@ -8,8 +8,8 @@ pipeline {
     environment {
         SONARQUBE_ENV = 'SonarQubeServer'
         JFROG_SERVER_ID = "innoimpex"
-        OUTPUT_FILE = "demo-webapp-1.0.0.war"
-        ARTIFACT_URL = "https://innoimpex.jfrog.io/artifactory/maven-libs-release-local/com/example/demo-webapp/1.0.0/demo-webapp-1.0.0.war"
+        OUTPUT_FILE = "demo-webapp-1.0.0-SNAPSHOT.war"
+        ARTIFACT_URL = "https://innoimpex.jfrog.io/artifactory/maven-libs-release-local/com/example/demo-webapp/1.0.0-SNAPSHOT/demo-webapp-1.0.0-SNAPSHOT.war"
     }
     stages{
         stage('checkout') {
