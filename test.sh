@@ -1,2 +1,2 @@
 echo "this is a test file"
-echo "this is a tst file"
+echo "added 2nd line for testing"
