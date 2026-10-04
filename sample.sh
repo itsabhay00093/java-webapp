@@ -1,2 +1,2 @@
-echo "this is a sampel file"
+echo "this is a sample file"
 
